@@ -9,7 +9,7 @@
 #include "TuringMachine.h"
 
 std::string trim(const std::string& str);
-std::vector<std::string> tokenizeBy(std::string str);
+std::vector<std::string> tokenizeBy(const std::string& str);
 
 TuringMachine::TuringMachine() {
     initialStatusPosInVector = -1;
@@ -51,9 +51,10 @@ void TuringMachine::build(char filename[]) {
         // Now dummy has de F Set
         readFSet(dummy);
         // The rest should be transition functions
-        while (!tmfile.eof()) {
-            std::getline(tmfile, dummy);
+        std::getline(tmfile, dummy);
+        while (!dummy.empty()) {
             readTransitionFunction(dummy);
+            std::getline(tmfile, dummy);
         }
         tmfile.close();
     } else {
@@ -81,6 +82,18 @@ void TuringMachine::addStatus(const Status& newStatus) {
 
 
 void TuringMachine::processString(std::string input) {
+    if (initialStatusPosInVector == -1) {
+        std::cout << "UNDEFINED TURING MACHINE." << std::endl;
+        return;
+    }
+    tape.setSequence(input);
+    int pointer = initialStatusPosInVector;
+    while (!nodes[pointer].isAnAcceptanceStatus()) {
+        
+    }
+}
+
+void TuringMachine::processStringFromFile(std::string filename) {
 
 }
 
@@ -93,7 +106,7 @@ void TuringMachine::readQSet(std::string str) {
     std::vector<std::string> tokenized = tokenizeBy(str);
     for (int i = 0; i < tokenized.size(); i++) {
         Status temp (tokenized[i], false);
-        nodes.push_back(temp);
+        addStatus(temp);
     }
 }
 
@@ -132,6 +145,13 @@ void TuringMachine::readTransitionFunction(std::string str) {
     findStatusByID(tokenized[0])->addTransition(newTrans);
 }
 
+void TuringMachine::print() {
+    std::cout << "NODES ---> ";
+    for (int i = 0; i < nodes.size(); i++)
+        std::cout << " " << nodes[i];
+    std::cout << std::endl;
+}
+
 
 
 
@@ -149,17 +169,21 @@ std::string trim(const std::string& str) {
 }
 
 
-std::vector<std::string> tokenizeBy(std::string str) {
-    str = trim(str);
+std::vector<std::string> tokenizeBy(const std::string& str) {
+    std::string trimmed = trim(str);
+    std::string value;
     std::vector<std::string> result;
-    char *line = new char[str.size() + 1];
-    std::copy(str.begin(), str.end(), line);
-    line[str.size()] = '\0';
+    result.push_back("dummy");
+    char *line = new char[trimmed.size() + 1];
+    std::copy(trimmed.begin(), trimmed.end(), line);
+    line[trimmed.size()] = '\0';
     char *token = std::strtok(line, " ");
     while (token != nullptr) {
-        std::string value(token);
+        value = token;
+        token = std::strtok(nullptr, " ");
         result.push_back(value);
     }
+    result.erase(result.begin());
     return result;
 }
 

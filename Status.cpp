@@ -23,7 +23,7 @@ Status::~Status() {
     std::vector<Transition>().swap(transitions);
 }
 
-std::string Status::getID() {
+std::string Status::getID() const {
     return identifier;
 }
 
@@ -58,6 +58,10 @@ void Status::addTransition(const Transition& newTrans) {
 
 
 
+std::ostream& operator<< (std::ostream& os, const Status& output) {
+    os << output.getID();
+    return os;
+}
 
 
 

@@ -13,11 +13,13 @@ Tape::Tape() {
 }
 
 
-Tape::Tape(std::string input, char wh) {
+Tape::Tape(std::string alph, char wh) {
     pointer = 0;
     white = wh;
-    for (int i = 0; i < input.size(); i++)
-        sequence.push_back(input[i]);
+    for (char temp : alph) {
+        if (temp != ' ')
+            alphabet.insert(temp);
+    }
 }
 
 
@@ -34,6 +36,13 @@ Tape::~Tape() {
 
 char Tape::get() {
     return sequence[pointer];
+}
+
+void Tape::setSequence(const std::string& seq) {
+    for (char temp : seq) {
+        if (temp != ' ')
+            sequence.push_back(temp);
+    }
 }
 
 std::vector<char> Tape::getSequence() {
@@ -72,6 +81,7 @@ Tape& Tape::operator=(const Tape& other) {
     pointer = other.pointer;
     white = other.white;
     sequence = other.sequence;
+    alphabet = other.alphabet;
     return *this;
 }
 

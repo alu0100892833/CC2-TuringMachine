@@ -35,7 +35,7 @@ public:
     Status(std::string symbol, bool accep);
     ~Status();
 
-    std::string getID();
+    std::string getID() const;
     bool isAnAcceptanceStatus();
     void setAcceptance();
     Transition getTransitionFor(std::string input);
@@ -43,7 +43,7 @@ public:
     void addTransition(const Transition& newTrans);
 };
 
-
+std::ostream& operator<< (std::ostream& os, const Status& output);
 
 
 
