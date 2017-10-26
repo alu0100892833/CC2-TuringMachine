@@ -11,12 +11,14 @@
 std::string trim(const std::string& str);
 std::vector<std::string> tokenizeBy(std::string str);
 
-TuringMachine::TuringMachine() {}
+TuringMachine::TuringMachine() {
+    initialStatusPosInVector = -1;
+}
 
-TuringMachine::TuringMachine(char filename[]) {
+void TuringMachine::build(char filename[]) {
     reset();
     std::ifstream tmfile;
-    tmfile.open("TM/first.mt");
+    tmfile.open(filename);
     if (tmfile.is_open()) {
         // IGNORE COMMENTS
         std::string dummy = "#";
@@ -67,6 +69,10 @@ TuringMachine::TuringMachine(const TuringMachine& copy) {
 
 TuringMachine::~TuringMachine() {
     reset();
+}
+
+int TuringMachine::getInitialStatusPos() const {
+    return initialStatusPosInVector;
 }
 
 void TuringMachine::addStatus(const Status& newStatus) {

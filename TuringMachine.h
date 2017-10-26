@@ -26,10 +26,12 @@ private:
 
 public:
     TuringMachine();
-    TuringMachine(char filename[]);
     TuringMachine(const TuringMachine& copy);
     ~TuringMachine();
 
+    void build(char filename[]);
+
+    int getInitialStatusPos() const;
     void addStatus(const Status& newStatus);
     void processString(std::string input);
 
