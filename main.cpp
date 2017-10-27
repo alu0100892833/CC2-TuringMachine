@@ -14,7 +14,6 @@ int main(int argc, const char * argv[]) {
     try {
         int option = 1;
         char filename[] = "";
-        char inputfile[] = "";
         TuringMachine tm;
         std::cout << "WELCOME. THIS PROGRAM SIMULATES A TURING MACHINE." << std::endl << std::endl;
         while (option != 0) {
@@ -37,16 +36,22 @@ int main(int argc, const char * argv[]) {
                     if (tm.getInitialStatusPos() == -1)
                         std::cout << "YOU FIRST NEED TO LOAD A TURING MACHINE." << std::endl;
                     else {
+                        std::string inputfile;
                         std::cout << "SPECIFY THE NAME OF THE FILE: ";
-                        // std::cin >> inputfile;
+                        std::cin >> inputfile;
+                        tm.processStringFromFile(inputfile);
+                        inputfile.clear();
                     }
                     break;
                 case 3 :
                     if (tm.getInitialStatusPos() == -1)
                         std::cout << "YOU FIRST NEED TO LOAD A TURING MACHINE." << std::endl;
                     else {
+                        std::string input;
                         std::cout << "SPECIFY THE INPUT STRING: ";
-                        // std::cin >> inputfile;
+                        std::cin >> input;
+                        tm.processString(input);
+                        input.clear();
                     }
                     break;
 

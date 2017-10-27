@@ -32,6 +32,7 @@ Tape::Tape(const Tape& copy) {
 
 Tape::~Tape() {
     sequence.clear();
+    alphabet.clear();
 }
 
 char Tape::get() {
@@ -75,6 +76,17 @@ void Tape::write(char symbol) {
 void Tape::writeAndMove(char symbol, char movement) {
     write(symbol);
     movePointer(movement);
+}
+
+void Tape::printResult() {
+    for (int i = pointer; i < sequence.size(); i++)
+        std::cout << sequence[i] << " ";
+    std::cout << white;
+}
+
+void Tape::reset() {
+    sequence.clear();
+    pointer = 0;
 }
 
 Tape& Tape::operator=(const Tape& other) {

@@ -34,13 +34,15 @@ public:
     int getInitialStatusPos() const;
     void addStatus(const Status& newStatus);
     void processString(std::string input);
+    void processStringFromFile(std::string filename);
+
+    void print();
 
 private:
     void reset();
     void readQSet(std::string str);
     void readFSet(std::string str);
     void readInputAlphabet(std::string str);
-    bool isAFinalState(std::string identifier);
     Status* findStatusByID(std::string identifier);
     void readTransitionFunction(std::string str);
 };

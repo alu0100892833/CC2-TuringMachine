@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(untitled)
+project(CC2-TuringMachine)
 
 set(CMAKE_CXX_STANDARD 11)
 

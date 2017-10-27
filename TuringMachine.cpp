@@ -86,16 +86,48 @@ void TuringMachine::processString(std::string input) {
         std::cout << "UNDEFINED TURING MACHINE." << std::endl;
         return;
     }
-    tape.setSequence(input);
-    int pointer = initialStatusPosInVector;
-    while (!nodes[pointer].isAnAcceptanceStatus()) {
-        
+    try {
+        std::cout << std::endl << "PROCESSING STRING: " << input << std::endl;
+        tape.setSequence(input);
+        Status *current = &nodes[initialStatusPosInVector];
+        while (!current->isAnAcceptanceStatus()) {
+            std::string symbol(1, tape.get());
+            Transition next = current->getTransitionFor(symbol);
+            if (next.getOriginalStatus().empty()) break;
+            current = findStatusByID(next.getNextStatus());
+            if (current == nullptr) throw "BAD POINTER. DESTINATION STATUS DOES NOT EXIST.";
+            tape.writeAndMove(next.getWrite()[0], next.getMovement());
+        }
+        if (current->isAnAcceptanceStatus()) {
+            std::cout << std::endl << "RECOGNIZED STRING" << std::endl;
+            std::cout << "TAPE FINAL SEQUENCE:   ";
+            tape.printResult();
+            std::cout << std::endl << std::endl;
+        } else {
+            std::cout << std::endl << "STRING NOT RECOGNIZED" << std::endl;
+        }
+        tape.reset();
+    } catch(const char* msg) {
+        std::cerr << msg << std::endl;
     }
 }
 
 void TuringMachine::processStringFromFile(std::string filename) {
-
+    std::ifstream reader;
+    reader.open(filename);
+    if (reader.is_open()) {
+        std::string input;
+        std::getline(reader, input);
+        while ((!input.empty()) && (!reader.eof())) {
+            processString(input);
+            std::getline(reader, input);
+        }
+        reader.close();
+    } else {
+        std::cout << "FILE NOT FOUND" << std::endl;
+    }
 }
+
 
 void TuringMachine::reset() {
     inputAlphabet.clear();
@@ -173,8 +205,8 @@ std::vector<std::string> tokenizeBy(const std::string& str) {
     std::string trimmed = trim(str);
     std::string value;
     std::vector<std::string> result;
-    result.push_back("dummy");
-    char *line = new char[trimmed.size() + 1];
+    result.push_back("dummy");  // if not initialised outside the loop, push_back does not work, I do not know why
+    auto *line = new char[trimmed.size() + 1];
     std::copy(trimmed.begin(), trimmed.end(), line);
     line[trimmed.size()] = '\0';
     char *token = std::strtok(line, " ");
