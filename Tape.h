@@ -33,6 +33,8 @@ public:
     ~Tape();
 
     char get();
+    void setAsEmptyTape(const std::string& alph);
+    void setAlphabet(const std::string& alph);
     void setSequence(const std::string& seq);
     std::vector<char> getSequence();
 

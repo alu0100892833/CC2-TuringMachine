@@ -13,26 +13,28 @@
 
 #include <iostream>
 #include <cstring>
+#include <vector>
 
 class Transition {
 
 private:
     std::string nextStatus;
     std::string originalStatus;
-    std::string input;
-    std::string write;
-    char movement;
+    std::vector<std::string> input;
+    std::vector<std::string> write;
+    std::vector<char> movement;
 
 public:
     Transition();
     Transition(const Transition& copy);
-    Transition(std::string origin, std::string next, std::string symbol, std::string wr, char mov);
+    Transition(const std::string& origin, const std::string& next, const std::vector<std::string>& symbol,
+               const std::vector<std::string>& wr, const std::vector<char>& mov);
     ~Transition();
     std::string getNextStatus() const;
     std::string getOriginalStatus() const;
-    std::string getInput() const;
-    std::string getWrite() const;
-    char getMovement() const;
+    std::vector<std::string> getInput() const;
+    std::vector<std::string> getWrite() const;
+    std::vector<char> getMovement() const;
 
 
 

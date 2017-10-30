@@ -26,6 +26,12 @@ void TuringMachine::build(char filename[]) {
             std::getline(tmfile, dummy);
             dummy = trim(dummy);
         }
+        // Now, dummy could have the Q set or the specific number of tapes
+        if (tokenizeBy(dummy).size() == 1) {
+            tape.resize((unsigned long) std::stoi(tokenizeBy(dummy)[0]));
+            std::getline(tmfile, dummy);
+        } else
+            tape.resize(1);
         // Now, dummy should have the Q set
         readQSet(dummy);
         std::getline(tmfile, dummy);
@@ -38,7 +44,10 @@ void TuringMachine::build(char filename[]) {
         if (white.size() > 1)
             throw "ERROR. WHITE SYMBOL NOT CORRECTLY SPECIFIED. SYNTAX ERROR";
         Tape dummytape (tapeAlphab, white[0]);
-        tape = dummytape;
+        //tape = dummytape;
+        tape[0] = dummytape;
+        for (int i = 1; i < tape.size(); i++)
+            tape[i].setAsEmptyTape(tapeAlphab);
         bool initialCorrectlyDefined = false;
         for (int i = 0; i < nodes.size(); i++)
             if (nodes[i].getID() == initialStatus) {
@@ -88,25 +97,32 @@ void TuringMachine::processString(std::string input) {
     }
     try {
         std::cout << std::endl << "PROCESSING STRING: " << input << std::endl;
-        tape.setSequence(input);
+        tape[0].setSequence(input);
         Status *current = &nodes[initialStatusPosInVector];
         while (!current->isAnAcceptanceStatus()) {
-            std::string symbol(1, tape.get());
-            Transition next = current->getTransitionFor(symbol);
+            std::vector<std::string> reading;
+            for (Tape temp : tape) {
+                std::string symbol(1, temp.get());
+                reading.push_back(symbol);
+            }
+            Transition next = current->getTransitionFor(reading);
             if (next.getOriginalStatus().empty()) break;
             current = findStatusByID(next.getNextStatus());
             if (current == nullptr) throw "BAD POINTER. DESTINATION STATUS DOES NOT EXIST.";
-            tape.writeAndMove(next.getWrite()[0], next.getMovement());
+            for (int i = 0; i < tape.size(); i++) {
+                char symbol = next.getWrite()[i][0];
+                tape[i].writeAndMove(symbol, next.getMovement()[i]);
+            }
         }
         if (current->isAnAcceptanceStatus()) {
             std::cout << std::endl << "RECOGNIZED STRING" << std::endl;
             std::cout << "TAPE FINAL SEQUENCE:   ";
-            tape.printResult();
+            printResult();
             std::cout << std::endl << std::endl;
         } else {
             std::cout << std::endl << "STRING NOT RECOGNIZED" << std::endl;
         }
-        tape.reset();
+        resetTapes();
     } catch(const char* msg) {
         std::cerr << msg << std::endl;
     }
@@ -165,23 +181,36 @@ Status* TuringMachine::findStatusByID(std::string identifier) {
 
 void TuringMachine::readTransitionFunction(std::string str) {
     std::vector<std::string> tokenized = tokenizeBy(str);
-    if (tokenized.size() != 5)
+    /*if (tokenized.size() != 5)
         throw "SYNTAX ERROR. TRANSITION FUNCTION NOT CORRECTLY DEFINED";
     else if (tokenized[4].size() > 1)
         throw "SYNTAX ERROR. UNRECOGNIZED MOVEMENT IN TRANSITION FUNCTION DEFINITION.";
     else if (findStatusByID(tokenized[0]) == nullptr)
         throw "SYNTAX ERROR. ORIGIN STATE IN TRANSITION FUNCTION DOES NOT EXIST.";
     else if (findStatusByID(tokenized[2]) == nullptr)
-        throw "SYNTAX ERROR. DESTINATION STATE IN TRANSITION FUNCTION DOES NOT EXIST.";
-    Transition newTrans(tokenized[0], tokenized[2], tokenized[1], tokenized[3], tokenized[4][0]);
+        throw "SYNTAX ERROR. DESTINATION STATE IN TRANSITION FUNCTION DOES NOT EXIST.";*/
+    if (tokenized.size() != 2 + tape.size() * 3)
+        throw "SYNTAX ERROR. TRANSITION FUNCTION NOT CORRECTLY DEFINED";
+    std::vector<std::string> input, write;
+    std::vector<char> movements;
+    for (int i = 1; i <= tape.size(); i++)
+        input.push_back(tokenized[i]);
+    for (int i = (int)tape.size() + 2; i < tokenized.size() - tape.size(); i++)
+        write.push_back(tokenized[i]);
+    for (int i = (int)tokenized.size() - (int)tape.size(); i < tokenized.size(); i++)
+        movements.push_back(tokenized[i][0]);
+    Transition newTrans(tokenized[0], tokenized[tape.size() + 1], input, write, movements);
     findStatusByID(tokenized[0])->addTransition(newTrans);
 }
 
-void TuringMachine::print() {
-    std::cout << "NODES ---> ";
-    for (int i = 0; i < nodes.size(); i++)
-        std::cout << " " << nodes[i];
-    std::cout << std::endl;
+void TuringMachine::printResult() {
+    for (Tape temp : tape)
+        temp.printResult();
+}
+
+void TuringMachine::resetTapes() {
+    for (Tape temp : tape)
+        temp.reset();
 }
 
 

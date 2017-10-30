@@ -13,7 +13,7 @@ Status::Status() {
     identifier = "";
 }
 
-Status::Status(std::string symbol, bool accep) {
+Status::Status(const std::string& symbol, bool accep) {
     identifier = symbol;
     acceptance = accep;
 }
@@ -37,7 +37,7 @@ void Status::setAcceptance() {
 }
 
 
-Transition Status::getTransitionFor(std::string input) {
+Transition Status::getTransitionFor(const std::vector<std::string>& input) {
     Transition result;
     for (int i = 0; i < transitions.size(); i++) {
         if (transitions[i].getInput() == input)

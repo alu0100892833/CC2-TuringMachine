@@ -50,6 +50,19 @@ std::vector<char> Tape::getSequence() {
     return sequence;
 }
 
+void Tape::setAsEmptyTape(const std::string& alph) {
+    sequence.push_back(white);
+    this->setAlphabet(alph);
+    pointer = 0;
+}
+
+void Tape::setAlphabet(const std::string& alph) {
+    for (char temp : alph) {
+        if (temp != ' ')
+            alphabet.insert(temp);
+    }
+}
+
 
 void Tape::movePointer(char movement) {
     if ((movement == 'L') && (pointer == 0)) {

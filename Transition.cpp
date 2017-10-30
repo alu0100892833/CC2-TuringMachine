@@ -13,7 +13,8 @@ Transition::Transition() {
 }
 
 
-Transition::Transition(std::string origin, std::string next, std::string symbol, std::string wr, char mov) {
+Transition::Transition(const std::string& origin, const std::string& next, const std::vector<std::string>& symbol,
+                       const std::vector<std::string>& wr, const std::vector<char>& mov) {
     originalStatus = origin;
     nextStatus = next;
     input = symbol;
@@ -29,7 +30,7 @@ Transition::Transition(const Transition& copy) {
     movement = copy.movement;
 }
 
-Transition::~Transition() {}
+Transition::~Transition() = default;
 
 
 std::string Transition::getNextStatus() const {
@@ -37,17 +38,17 @@ std::string Transition::getNextStatus() const {
 }
 
 
-std::string Transition::getInput() const {
+std::vector<std::string> Transition::getInput() const {
     return input;
 }
 
 
-std::string Transition::getWrite() const {
+std::vector<std::string> Transition::getWrite() const {
     return write;
 }
 
 
-char Transition::getMovement() const {
+std::vector<char> Transition::getMovement() const {
     return movement;
 }
 
@@ -60,8 +61,14 @@ std::string Transition::getOriginalStatus() const {
 
 
 std::ostream& operator<< (std::ostream& os, const Transition& tst) {
-    os << tst.getOriginalStatus() << " " << tst.getInput();
-    os << " ; " << tst.getNextStatus() << " " << tst.getWrite() << " " << tst.getMovement();
+    os << tst.getOriginalStatus();
+    for (const std::string& temp : tst.getInput())
+        os << " " << temp;
+    os << " ; " << tst.getNextStatus();
+    for (const std::string& temp : tst.getWrite())
+        os << " " << temp;
+    for (const char temp : tst.getMovement())
+        os << " " << temp;
     return os;
 }
 

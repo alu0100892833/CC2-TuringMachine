@@ -32,13 +32,13 @@ private:
 
 public:
     Status();
-    Status(std::string symbol, bool accep);
+    Status(const std::string& symbol, bool accep);
     ~Status();
 
     std::string getID() const;
     bool isAnAcceptanceStatus();
     void setAcceptance();
-    Transition getTransitionFor(std::string input);
+    Transition getTransitionFor(const std::vector<std::string>& input);
 
     void addTransition(const Transition& newTrans);
 };

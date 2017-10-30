@@ -22,7 +22,7 @@ private:
     int initialStatusPosInVector;
     std::set<std::string> inputAlphabet;
     std::vector<Status> nodes;
-    Tape tape;
+    std::vector<Tape> tape;
 
 public:
     TuringMachine();
@@ -36,10 +36,11 @@ public:
     void processString(std::string input);
     void processStringFromFile(std::string filename);
 
-    void print();
+    void printResult();
 
 private:
     void reset();
+    void resetTapes();
     void readQSet(std::string str);
     void readFSet(std::string str);
     void readInputAlphabet(std::string str);
