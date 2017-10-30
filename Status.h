@@ -23,6 +23,10 @@
 #include <fstream>
 #include <sstream>
 
+/**
+ * @brief A class that represents a status or node in a Turing Machine.
+ * @author Óscar Darias Plasencia
+ */
 class Status {
 
 private:
@@ -31,18 +35,63 @@ private:
     std::vector<Transition> transitions;
 
 public:
+
+    /**
+     * @brief Default constructor.
+     */
     Status();
+
+    /**
+     * @brief Parameter constructor
+     * @param symbol The identificator of the status
+     * @param accep Specifies if it will be an acceptance status
+     */
     Status(const std::string& symbol, bool accep);
+
+    /**
+     * @brief Destructor.
+     */
     ~Status();
 
+
+    /**
+     * @brief Getter for the identificator.
+     * @return ID of the status.
+     */
     std::string getID() const;
+
+    /**
+     * @brief Check if it is an acceptance status
+     * @return Value of acceptance
+     */
     bool isAnAcceptanceStatus();
+
+    /**
+     * @brief Sets the status as an acceptance status.
+     */
     void setAcceptance();
+
+    /**
+     * @brief Returns a transition that matches the input given as an argument.
+     * @param input Vector with all the input strings read on the different tapes.
+     * @return A matching Transition. Will be empty if not found.
+     */
     Transition getTransitionFor(const std::vector<std::string>& input);
 
+
+    /**
+     * @brief Adds a new Transition object to the vector of transitions of the status.
+     * @param newTrans
+     */
     void addTransition(const Transition& newTrans);
 };
 
+/**
+ * @brief Operator << overload for Status.
+ * @param os
+ * @param output
+ * @return
+ */
 std::ostream& operator<< (std::ostream& os, const Status& output);
 
 

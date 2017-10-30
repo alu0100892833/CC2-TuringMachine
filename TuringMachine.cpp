@@ -47,7 +47,7 @@ void TuringMachine::build(char filename[]) {
         //tape = dummytape;
         tape[0] = dummytape;
         for (int i = 1; i < tape.size(); i++)
-            tape[i].setAsEmptyTape(tapeAlphab);
+            tape[i].setAsEmptyTape(tapeAlphab, white[0]);
         bool initialCorrectlyDefined = false;
         for (int i = 0; i < nodes.size(); i++)
             if (nodes[i].getID() == initialStatus) {
@@ -61,10 +61,11 @@ void TuringMachine::build(char filename[]) {
         readFSet(dummy);
         // The rest should be transition functions
         std::getline(tmfile, dummy);
-        while (!dummy.empty()) {
+        while (!tmfile.eof()) {
             readTransitionFunction(dummy);
             std::getline(tmfile, dummy);
         }
+        readTransitionFunction(dummy);
         tmfile.close();
     } else {
         throw "ERROR. Turing Machine file could not be loaded.";
@@ -180,6 +181,7 @@ Status* TuringMachine::findStatusByID(std::string identifier) {
 }
 
 void TuringMachine::readTransitionFunction(std::string str) {
+    if (str.empty()) return;
     std::vector<std::string> tokenized = tokenizeBy(str);
     /*if (tokenized.size() != 5)
         throw "SYNTAX ERROR. TRANSITION FUNCTION NOT CORRECTLY DEFINED";
@@ -204,13 +206,21 @@ void TuringMachine::readTransitionFunction(std::string str) {
 }
 
 void TuringMachine::printResult() {
-    for (Tape temp : tape)
+    for (Tape temp : tape) {
         temp.printResult();
+        std::cout << std::endl;
+    }
 }
 
 void TuringMachine::resetTapes() {
-    for (Tape temp : tape)
-        temp.reset();
+    for (int i = 0; i < tape.size(); i++) {
+        tape[i].reset();
+        if (i != 0) {
+            char wh = tape[i].getWhite();
+            std::string alph = tape[i].getAlphabetAsString();
+            tape[i].setAsEmptyTape(alph, wh);
+        }
+    }
 }
 
 

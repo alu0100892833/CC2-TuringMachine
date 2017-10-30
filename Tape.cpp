@@ -50,7 +50,20 @@ std::vector<char> Tape::getSequence() {
     return sequence;
 }
 
-void Tape::setAsEmptyTape(const std::string& alph) {
+std::string Tape::getAlphabetAsString() {
+    std::string alph = "";
+    for (char temp : alphabet) {
+        alph += temp;
+    }
+    return alph;
+}
+
+char Tape::getWhite() {
+    return white;
+}
+
+void Tape::setAsEmptyTape(const std::string& alph, char wh) {
+    white = wh;
     sequence.push_back(white);
     this->setAlphabet(alph);
     pointer = 0;
