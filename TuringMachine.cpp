@@ -100,7 +100,7 @@ void TuringMachine::processString(std::string input) {
         std::cout << std::endl << "PROCESSING STRING: " << input << std::endl;
         tape[0].setSequence(input);
         Status *current = &nodes[initialStatusPosInVector];
-        while (!current->isAnAcceptanceStatus()) {
+        while (true) {
             std::vector<std::string> reading;
             for (Tape temp : tape) {
                 std::string symbol(1, temp.get());
